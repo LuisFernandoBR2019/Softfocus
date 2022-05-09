@@ -14,7 +14,7 @@ Para a funcionalidade da aplicação, é necassário ter as seguintes ferramenta
 ## Uso
 Passo a passo para a utilização da aplicação:
 1° passo : Instale as ferramentas mencionadas no tópico acima.
-2° passo : Execute o script localizado na pasta documentos dentro do projeto (proagro-ddl.sql). Obs.: Utilizo via prompt de comando o seguinte comando (psql -U postgres -f <diretorio>).
+2° passo : Execute o script localizado na pasta documentos dentro do projeto (proagro-ddl.sql). Obs.: Utilizo via prompt de comando o seguinte comando (psql -U postgres -f (diretório do script))).
 3° passo : Execute a aplicação e acesse a url : localhost:8082/
 4° passo (opcional) : Caso queira executar o teste unitário do CRUD, basta executar a classe ComunicacaoPerdaTest.java com a aplicação em execução.
 5° passo (opcional) : Caso queira realizar a consulta da documentação da API, basta acessar a url : http://localhost:8082/swagger-ui.html com a aplicação em execução.
