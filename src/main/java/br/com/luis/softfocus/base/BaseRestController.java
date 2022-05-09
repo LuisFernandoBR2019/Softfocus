@@ -15,4 +15,6 @@ public abstract interface BaseRestController<T> {
 	ResponseEntity<Map<String, Object>> create(T entity);
 
 	ResponseEntity<Boolean> delete(Long id);
+
+	ResponseEntity<Map<String, byte[]>> gerarRelatorio();
 }

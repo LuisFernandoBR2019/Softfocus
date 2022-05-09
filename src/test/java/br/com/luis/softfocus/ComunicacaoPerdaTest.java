@@ -106,7 +106,7 @@ class ComunicacaoPerdaTest {
 	}
 
 	@Test
-	@Order(2)
+	@Order(3)
 	void validarKmComunicacaoPerda() {
 		endpoint = "http://localhost:8082/api/v1/proagro/create";
 		restTemplate = new RestTemplate();
@@ -135,6 +135,27 @@ class ComunicacaoPerdaTest {
 		restTemplate = new RestTemplate();
 		ComunicacaoPerda entity = new ComunicacaoPerda("Luis", "teste1@softfocus.com.br", "112.169.589-87", "Milho",
 				-55.156485, -82.654123, "2022-05-08", "RAIO");
+		int resposta = 0;
+		try {
+
+			HttpEntity<ComunicacaoPerda> httpEntity = new HttpEntity<ComunicacaoPerda>(entity);
+
+			ResponseEntity<?> responseEntity = restTemplate.exchange(endpoint, HttpMethod.POST, httpEntity, Map.class);
+
+			resposta = responseEntity.getStatusCodeValue();
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		assertEquals(HttpStatus.CREATED.value(), resposta);
+	}@Test
+	@Order(2)
+	void criarComunicacaoPerdaValidarKM() {
+		endpoint = "http://localhost:8082/api/v1/proagro/create";
+		restTemplate = new RestTemplate();
+		ComunicacaoPerda entity = new ComunicacaoPerda("Luis", "teste1@softfocus.com.br", "112.169.589-87", "Milho",
+				-55.156485, -82.654123, "2022-05-08", "SECA");
 		int resposta = 0;
 		try {
 

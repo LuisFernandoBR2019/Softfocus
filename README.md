@@ -18,6 +18,7 @@ Passo a passo para a utilização da aplicação:
 3° passo : Execute a aplicação e acesse a url : localhost:8082/
 4° passo (opcional) : Caso queira executar o teste unitário do CRUD, basta executar a classe ComunicacaoPerdaTest.java com a aplicação em execução.
 5° passo (opcional) : Caso queira realizar a consulta da documentação da API, basta acessar a url : http://localhost:8082/swagger-ui.html com a aplicação em execução.
+6° passo (opcional) : Caso queira gerar o relatório, basta pressionar o botão Gerar Relatório, será feito uma cópia de segurança dentro da pasta Documentos/ProAgro/Relatórios e irá fazer o download de uma outra cópia via front-end.
  
 
 ## Autores

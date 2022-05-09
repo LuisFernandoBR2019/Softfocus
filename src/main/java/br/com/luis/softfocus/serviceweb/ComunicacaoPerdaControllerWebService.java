@@ -67,6 +67,27 @@ public class ComunicacaoPerdaControllerWebService {
 		return new ArrayList<ComunicacaoPerda>();
 	}
 
+	public Map<String, byte[]> gerarRelatorio() {
+		endpoint = "http://localhost:8082/api/v1/proagro/gerar-relatorio";
+		restTemplate = new RestTemplate();
+		int resposta = 0;
+		try {
+
+			ResponseEntity<?> responseEntity = restTemplate.exchange(endpoint, HttpMethod.POST, null, Map.class);
+
+			resposta = responseEntity.getStatusCodeValue();
+			if (resposta == HttpStatus.ACCEPTED.value()) {
+				return (Map<String, byte[]>) responseEntity.getBody();
+			} else {
+				return null;
+			}
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
+	}
+
 	public ComunicacaoPerda readByID(Long id) {
 		endpoint = "http://localhost:8082/api/v1/proagro/read-by-id/{id}";
 		restTemplate = new RestTemplate();

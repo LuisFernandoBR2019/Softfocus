@@ -71,6 +71,9 @@
 				<button type="button" class="btn btn-primary" data-bs-toggle="modal"
 					data-bs-target="#modal_novo_usuario"
 					th:attr="onclick=|alteraTextoBotaoAdicionar()|">Adicionar</button>
+
+				<button type="button" class="btn btn-primary" th:attr="onclick=|functionGerarRelatorio()|">Gerar
+					relatório</button>
 			</div>
 		</div>
 
@@ -93,14 +96,16 @@
 						<div class="mb-3">
 							<label for="email_comunicacao_perda">E-mail</label>
 							<input id="email_comunicacao_perda" type="email" class="form-control"
-								placeholder="digite o e-mail" th:field="${comunicacaoPerda.email}" minlength="4">
+								placeholder="digite o e-mail" th:field="${comunicacaoPerda.email}" minlength="4"
+								name="email" required>
 						</div>
 						<div class="mb-3">
 							<label for="cpf_comunicacao_perda">CPF</label>
 							<input id="cpf_comunicacao_perda" type="text" class="form-control"
 								placeholder="digite o CPF" th:field="${comunicacaoPerda.cpf}"
-								onfocus="formatarCampo(this);" onblur="formatarCampo(this);" maxlength="14"
-								minlength="11">
+								onfocus="formatarCampo(this);" onblur="formatarCampo(this);"
+								onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="11"
+								minlength="11" autocomplete="off">
 						</div>
 						<div class="mb-3">
 							<label for="latitude_comunicacao_perda">Latitude</label>

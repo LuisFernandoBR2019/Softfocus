@@ -53,12 +53,17 @@ public class ValidacaoComunicacaoPerda {
 		Geolocalizacao geolocalizacao = new Geolocalizacao(comunicacaoPerda.getLatitude(),
 				comunicacaoPerda.getLongitude());
 		for (ComunicacaoPerda comunicacaoPerdaAux : lista) {
-			if (comunicacaoPerda.getData_colheita().equals(comunicacaoPerdaAux.getData_colheita())) {
-				Geolocalizacao geolocalizacaoAux = new Geolocalizacao(comunicacaoPerdaAux.getLatitude(),
-						comunicacaoPerdaAux.getLongitude());
-				double distancia = geolocalizacao.distanceInKm(geolocalizacaoAux);
-				if (distancia <= 10.0 && distancia != 0.0) {
-					return true;
+			if (comunicacaoPerda.getId() != comunicacaoPerdaAux.getId()) {
+				if (comunicacaoPerda.getData_colheita().equals(comunicacaoPerdaAux.getData_colheita())) {
+					if (!comunicacaoPerda.getEvento_ocorrido().equals(comunicacaoPerdaAux.getEvento_ocorrido())) {
+						Geolocalizacao geolocalizacaoAux = new Geolocalizacao(comunicacaoPerdaAux.getLatitude(),
+								comunicacaoPerdaAux.getLongitude());
+						double distancia = geolocalizacao.distanceInKm(geolocalizacaoAux);
+						if (distancia <= 10.0) {
+							return true;
+						}
+					}
+
 				}
 			}
 		}

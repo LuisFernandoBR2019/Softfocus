@@ -101,7 +101,26 @@ function mascaraCpf(valor) {
 	return valor.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "\$1.\$2.\$3\-\$4");
 }
 
-function validaCampoEmBranco(comunicacaoPerda) {
+function validateEmail(email) {
+	let usuario = email.substring(0, email.indexOf("@"));
+	let dominio = email.substring(email.indexOf("@") + 1, email.length);
+	if ((usuario.length >= 1) &&
+		(dominio.length >= 3) &&
+		(usuario.search("@") == -1) &&
+		(dominio.search("@") == -1) &&
+		(usuario.search(" ") == -1) &&
+		(dominio.search(" ") == -1) &&
+		(dominio.search(".") != -1) &&
+		(dominio.indexOf(".") >= 1) &&
+		(dominio.lastIndexOf(".") < dominio.length - 1)) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+function validaCampos(comunicacaoPerda) {
 	let alerta = document.getElementById('alertaCampoEmBranco');
 
 	if (comunicacaoPerda.nome == "") {
@@ -114,13 +133,32 @@ function validaCampoEmBranco(comunicacaoPerda) {
 		alerta.hidden = false;
 		alerta.innerText = "Campo e-mail em branco.";
 		return true;
+	} else {
+		if (!validateEmail(comunicacaoPerda.email)) {
+			alerta.hidden = false;
+			alerta.innerText = "Campo e-mail inválido.";
+			return true;
+		}
 	}
 
 	if (comunicacaoPerda.cpf == "") {
 		alerta.hidden = false;
-		alerta.innerText = "Campo cpf em branco.";
+		alerta.innerText = "Campo CPF em branco.";
+		return true;
+	} else {
+		if (comunicacaoPerda.cpf.length < 14 || comunicacaoPerda.cpf.length > 14) {
+			alerta.hidden = false;
+			alerta.innerText = "Campo CPF inválido.";
+			return true;
+		}
+	}
+
+	if (!VerificaCPF(comunicacaoPerda.cpf)) {
+		alerta.hidden = false;
+		alerta.innerText = "CPF inválido.";
 		return true;
 	}
+
 
 	if (comunicacaoPerda.latitude == "") {
 		alerta.hidden = false;
@@ -166,7 +204,7 @@ function alteraTextoBotaoAdicionar() {
 
 function functionCreateOrUpdate() {
 	const comunicacaoPerda = functionPegarTodasInformacoesModal();
-	if (!validaCampoEmBranco(comunicacaoPerda)) {
+	if (!validaCampos(comunicacaoPerda)) {
 		var comunicacaoPerdaJson = JSON.stringify(comunicacaoPerda);
 		console.log(comunicacaoPerda);
 		var endPoint = comunicacaoPerdaAux.id != 0 ? "../update" : "../create";
@@ -309,6 +347,100 @@ function functionPegarTodasInformacoesModal() {
 	return formularioDados;
 }
 
+function base64ToArrayBuffer(base64) {
+	var binaryString = window.atob(base64);
+	var binaryLen = binaryString.length;
+	var bytes = new Uint8Array(binaryLen);
+	for (var i = 0; i < binaryLen; i++) {
+		var ascii = binaryString.charCodeAt(i);
+		bytes[i] = ascii;
+	}
+	return bytes;
+}
+
+function saveByteArray(reportName, resultByte, tipo) {
+	var bytes = new Uint8Array(resultByte);
+	var formato = 'application/' + tipo
+	var blob = new Blob([bytes], { type: formato });
+	var link = document.createElement('a');
+	link.href = window.URL.createObjectURL(blob);
+	var fileName = reportName += tipo == 'sql' ? '.sql' : '';
+	link.download = fileName;
+	link.click();
+}
+
+function functionGerarRelatorio() {
+	loading(true);
+	jQuery.ajax({
+		url: "../api/v1/proagro/gerar-relatorio",
+		type: 'POST',
+		dataType: 'json',
+		contentType: "application/json; charset=utf-8",
+		error: function(dados) {
+			loading(false);
+			showToast(TOAST_ERROR, "Ocorreu um erro ao gerar relatorio");
+		},
+		success: function(dados) {
+			const retornoAjax = dados.diretorio;
+			if (retornoAjax != undefined) {
+				var arrayByte = base64ToArrayBuffer(retornoAjax);
+				saveByteArray('Relatório', arrayByte, 'pdf');
+				loading(false);
+				showToast(TOAST_SUCCESS, "Relatorio gerado com sucesso");
+			} else {
+				loading(false);
+				showToast(TOAST_ERROR, "Ocorreu um erro ao gerar relatorio");
+			}
+		}
+	});
+}
+
+function VerificaCPF(strCpf) {
+	strCpf = strCpf.replaceAll('.', '');
+	strCpf = strCpf.replace('-', '');
+	var soma;
+	var resto;
+	soma = 0;
+	if (strCpf == "00000000000") {
+		return false;
+	}
+
+	for (i = 1; i <= 9; i++) {
+		soma = soma + parseInt(strCpf.substring(i - 1, i)) * (11 - i);
+	}
+
+	resto = soma % 11;
+
+	if (resto == 10 || resto == 11 || resto < 2) {
+		resto = 0;
+	} else {
+		resto = 11 - resto;
+	}
+
+	if (resto != parseInt(strCpf.substring(9, 10))) {
+		return false;
+	}
+
+	soma = 0;
+
+	for (i = 1; i <= 10; i++) {
+		soma = soma + parseInt(strCpf.substring(i - 1, i)) * (12 - i);
+	}
+	resto = soma % 11;
+
+	if (resto == 10 || resto == 11 || resto < 2) {
+		resto = 0;
+	} else {
+		resto = 11 - resto;
+	}
+
+	if (resto != parseInt(strCpf.substring(10, 11))) {
+		return false;
+	}
+
+	return true;
+}
+
 function limparCampos() {
 	document.getElementById('nome_comunicacao_perda').value = "";
 	document.getElementById('email_comunicacao_perda').value = "";
@@ -319,7 +451,7 @@ function limparCampos() {
 	document.getElementById('data_colheita_comunicacao_perda').value = "";
 	document.getElementById('evento_ocorrido_comunicacao_perda').value = "";
 	document.getElementById('evento_ocorrido_comunicacao_perda').selectedIndex = 0;
-
+	document.getElementById('alertaCampoEmBranco').hidden = true;
 	comunicacaoPerdaAux = new ComunicacaoPerdaClass(0);
 }
 

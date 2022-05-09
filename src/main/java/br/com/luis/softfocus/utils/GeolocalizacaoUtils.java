@@ -3,23 +3,9 @@ package br.com.luis.softfocus.utils;
 import br.com.luis.softfocus.model.Geolocalizacao;
 
 public class GeolocalizacaoUtils {
-	/**
-	 * Raio médio da terra em quilômetros Ref:
-	 * http://en.wikipedia.org/wiki/Earth_radius
-	 */
+
 	public static int EARTH_RADIUS_KM = 6371;
 
-	/**
-	 * Distância entre dois pontos geográficos. Os valores devem ser informados em
-	 * graus.
-	 * 
-	 * @param firstLatitude   Latitude do primeiro ponto
-	 * @param firstLongitude  Longitude do primeiro ponto
-	 * @param secondLatitude  Latitude do segundo ponto
-	 * @param secondLongitude Longitude do segundo ponto
-	 * 
-	 * @return Distância em quilômetros entre os dois pontos
-	 */
 	public static double geoDistanceInKm(double firstLatitude, double firstLongitude, double secondLatitude,
 			double secondLongitude) {
 
@@ -35,13 +21,6 @@ public class GeolocalizacaoUtils {
 				+ Math.sin(firstLatToRad) * Math.sin(secondLatToRad)) * EARTH_RADIUS_KM;
 	}
 
-	/**
-	 * Distância entre dois pontos geográficos.
-	 * 
-	 * @param first  Primeira coordenada geográfica
-	 * @param second Segunda coordenada geográfica
-	 * @return Distância em quilômetros entre os dois pontos
-	 */
 	public static double geoDistanceInKm(Geolocalizacao first, Geolocalizacao second) {
 		return geoDistanceInKm(first.getLatitude(), first.getLongitude(), second.getLatitude(), second.getLongitude());
 	}

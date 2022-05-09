@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import br.com.luis.softfocus.icontroller.IComunicacaoPerdaController;
+import br.com.luis.softfocus.jasper.ManipulaArquivos;
+import br.com.luis.softfocus.jasper.RelatorioJasperServicos;
 import br.com.luis.softfocus.model.ComunicacaoPerda;
 import br.com.luis.softfocus.service.ComunicacaoPerdaService;
 import br.com.luis.softfocus.utils.ValidacaoComunicacaoPerda;
@@ -30,6 +32,12 @@ public class ComunicacaoPerdaController implements IComunicacaoPerdaController {
 
 	@Autowired
 	private ComunicacaoPerdaService comunicacaoPerdaService;
+
+	@Autowired
+	private RelatorioJasperServicos relatorioJasperServicos;
+
+	@Autowired
+	private ManipulaArquivos manipulaArquivos;
 
 	@Autowired
 	private ValidacaoComunicacaoPerda validacao;
@@ -105,6 +113,26 @@ public class ComunicacaoPerdaController implements IComunicacaoPerdaController {
 		try {
 			Boolean response = comunicacaoPerdaService.deleteById(id);
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+	}
+
+	@PostMapping("/gerar-relatorio")
+	@Override
+	public ResponseEntity<Map<String, byte[]>> gerarRelatorio() {
+		try {
+			List<ComunicacaoPerda> list = comunicacaoPerdaService.readAll();
+
+			Map<String, byte[]> retorno = new HashMap<String, byte[]>();
+			List<Byte> listBytes = manipulaArquivos.fileRead(relatorioJasperServicos.generateAndGetPdfFilePath(list));
+			byte[] bytes = new byte[listBytes.size()];
+			for (int i = 0; i < bytes.length; i++) {
+				bytes[i] = listBytes.get(i);
+			}
+			retorno.put("diretorio", bytes);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(retorno);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.badRequest().build();
