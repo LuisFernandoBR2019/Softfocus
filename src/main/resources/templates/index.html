@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="https://www.thymeleaf.org">
+
+<head th:replace="/fragments/fragments :: head" />
+
+<body id="body-pd" class="d-flex flex-column min-vh-100" onload="functionCarregaLista()">
+	<header th:replace="/fragments/fragments :: header" />
+	<div>
+		<!-- tabela usuários -->
+		<div class="card" style="margin-top: 20px;">
+			<h5 class="card-header">Lista de Comunicacao de Perda</h5>
+			<div class="card-body">
+
+				<div style="margin-bottom: 20px;">
+					<table id="table_usuarios" class="table table-striped" style="width:100%" data-toggle="table"
+						data-pagination="true" data-search="true" data-search-align="left" data-show-columns="true"
+						data-show-toggle="true" data-show-refresh="false" data-auto-refresh="false"
+						data-auto-refresh-status="false" data-auto-refresh-interval="5" data-auto-refresh-silent="true"
+						data-show-fullscreen="true" data-show-pagination-switch="false"
+						data-pagination-pre-text="Anterior" data-pagination-next-text="Próximo"
+						data-pagination-h-align="left" data-pagination-detail-h-align="right"
+						data-page-list="[10, 20, 30, 40, 50, all]" data-locale="pt-BR" data-toolbar="#toolbar"
+						data-toolbar-align="right">
+
+						<thead>
+							<tr>
+								<th data-field="id" data-sortable="true">ID</th>
+								<th data-field="nome" data-sortable="true">Nome</th>
+								<th data-field="email" data-sortable="true">E-mail</th>
+								<th data-field="cpf" data-sortable="true">CPF</th>
+								<th data-field="latitude" data-sortable="true">Latitude</th>
+								<th data-field="longitude" data-sortable="true">Longitude</th>
+								<th data-field="tipo_lavoura" data-sortable="false">Tipo de lavoura</th>
+								<th data-field="data_colheita" data-sortable="false">Data da colheita</th>
+								<th data-field="evento" data-sortable="false">Evento ocorrido</th>
+								<th data-field="action" data-sortable="false">Ações</th>
+							</tr>
+						</thead>
+						<tbody id="listaUsuarios">
+							<tr style="cursor: pointer;" scope="row" th:each="comunicacaoPerda: ${lista}">
+								<td th:text="${comunicacaoPerda.id}" />
+								<td th:text="${comunicacaoPerda.nome}" />
+								<td th:text="${comunicacaoPerda.email}" />
+								<td th:text="${comunicacaoPerda.cpf}" />
+								<td th:text="${comunicacaoPerda.latitude}" />
+								<td th:text="${comunicacaoPerda.longitude}" />
+								<td th:text="${comunicacaoPerda.tipo_lavoura}" />
+								<td th:text="${comunicacaoPerda.data_colheita}" />
+								<td th:text="${comunicacaoPerda.evento_ocorrido}" />
+								<td>
+									<div style="cursor: pointer;" class="dropdown">
+										<a class="btn btn-secondary btn-sm dropdown-toggle" href="#" role="button"
+											id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+											Ações
+										</a>
+										<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+											<li><a class="dropdown-item" data-bs-toggle="modal"
+													data-bs-target="#modal_novo_usuario"
+													th:attr="onclick=|functionReadByID('${comunicacaoPerda.id}')|">Editar</a>
+											</li>
+											<li><a class="dropdown-item"
+													th:attr="onclick=|functionDelete('${comunicacaoPerda.id}')|">Deletar</a>
+											</li>
+										</ul>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+					data-bs-target="#modal_novo_usuario"
+					th:attr="onclick=|alteraTextoBotaoAdicionar()|">Adicionar</button>
+			</div>
+		</div>
+
+
+		<div id="modal_novo_usuario" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+			aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="staticBackdropLabel2">Adicionar Comunicação Perda</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+							th:attr="onclick=|limparCampos()|"></button>
+					</div>
+					<div class="modal-body">
+						<div class="mb-3">
+							<label for="nome_comunicacao_perda">Nome do produtor</label>
+							<input id="nome_comunicacao_perda" type="text" class="form-control"
+								placeholder="digite o nome" th:field="${comunicacaoPerda.nome}" minlength="4">
+						</div>
+						<div class="mb-3">
+							<label for="email_comunicacao_perda">E-mail</label>
+							<input id="email_comunicacao_perda" type="email" class="form-control"
+								placeholder="digite o e-mail" th:field="${comunicacaoPerda.email}" minlength="4">
+						</div>
+						<div class="mb-3">
+							<label for="cpf_comunicacao_perda">CPF</label>
+							<input id="cpf_comunicacao_perda" type="text" class="form-control"
+								placeholder="digite o CPF" th:field="${comunicacaoPerda.cpf}"
+								onfocus="formatarCampo(this);" onblur="formatarCampo(this);" maxlength="14"
+								minlength="11">
+						</div>
+						<div class="mb-3">
+							<label for="latitude_comunicacao_perda">Latitude</label>
+							<input id="latitude_comunicacao_perda" type="text" class="form-control"
+								placeholder="digite a latitude" th:field="${comunicacaoPerda.latitude}" minlength="4">
+						</div>
+						<div class="mb-3">
+							<label for="longitude_comunicacao_perda">Longitude</label>
+							<input id="longitude_comunicacao_perda" type="text" class="form-control"
+								placeholder="digite a longitude" th:field="${comunicacaoPerda.longitude}" minlength="4">
+						</div>
+						<div class="mb-3">
+							<label for="tipo_lavoura_comunicacao_perda">Tipo de lavoura</label>
+							<input id="tipo_lavoura_comunicacao_perda" type="text" class="form-control"
+								placeholder="digite o tipo de lavoura" th:field="${comunicacaoPerda.tipo_lavoura}"
+								minlength="4">
+						</div>
+						<div class="mb-3">
+							<label for="data_colheita_comunicacao_perda">Data da colheita</label>
+							<input id="data_colheita_comunicacao_perda" type="date" class="form-control"
+								placeholder="digite a data da colheita" th:field="${comunicacaoPerda.data_colheita}">
+						</div>
+						<div class="mb-3">
+							<label for="evento_ocorrido_comunicacao_perda">Evento
+								ocorrido</label>
+							<select id="evento_ocorrido_comunicacao_perda" class="form-select"
+								aria-label="Selecione um evento">
+								<option value="SELECT" selected>Selecione um evento</option>
+								<option value="CHUVA EXCESSIVA">CHUVA EXCESSIVA</option>
+								<option value="GEADA">GEADA</option>
+								<option value="GRANIZO">GRANIZO</option>
+								<option value="SECA">SECA</option>
+								<option value="VENDAVAL">VENDAVAL</option>
+								<option value="RAIO">RAIO</option>
+							</select>
+						</div>
+						<div id="alertaCampoEmBranco" style="margin-top: 20px;" class="alert alert-danger" hidden>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="botaoSair"
+								th:attr="onclick=|limparCampos()|">Cancelar</button>
+							<button id="botaoCriarAlterar" type="submit" class="btn btn-primary"
+								th:attr="onclick=|functionCreateOrUpdate()|"></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- TOAST -->
+	<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+		<div id="toast" class="my-toast toast" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="toast-header">
+				<img id="toast-image" src="/img/success.png" class="rounded me-2" alt="...">
+				<strong class="me-auto">ProAgro</strong>
+				<small>Agora há pouco</small>
+				<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+			<div id="toast-message" class="toast-body">
+				ALERTA SENDO EXIBIDO
+			</div>
+		</div>
+	</div>
+	<!-- loading -->
+	<div id="modalLoading" class="modal fade bd-example-modal-lg" data-bs-backdrop="static" data-bs-keyboard="false"
+		tabindex="-1">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content" style="width: 48px">
+				<span class="fa fa-spinner fa-spin fa-3x"></span>
+			</div>
+		</div>
+	</div>
+
+	<script src="/webjars/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+		integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+		crossorigin="anonymous"></script>
+
+	<script src="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.js"></script>
+	<script th:src="@{scripts/bootstrap-table-pt-BR.js}"></script>
+	<script
+		src="https://unpkg.com/bootstrap-table@1.19.1/dist/extensions/auto-refresh/bootstrap-table-auto-refresh.min.js"></script>
+	<script
+		src="https://unpkg.com/bootstrap-table@1.19.1/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+
+	<!-- Scripts -->
+	<script>
+		jQuery(function ($) {
+			$("#cpf_comunicacao_perda").mask("999.999.999-99");
+		});
+	</script>
+
+</body>
+
+</html>
