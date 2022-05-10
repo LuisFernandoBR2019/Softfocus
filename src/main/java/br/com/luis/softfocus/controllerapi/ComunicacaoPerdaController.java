@@ -72,7 +72,7 @@ public class ComunicacaoPerdaController implements IComunicacaoPerdaController {
 				Boolean response = comunicacaoPerdaService.update(entity);
 				return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
 			} else {
-				return ResponseEntity.badRequest().build();
+				return ResponseEntity.status(HttpStatus.ACCEPTED).body(false);
 			}
 
 		} catch (Exception e) {
@@ -95,10 +95,11 @@ public class ComunicacaoPerdaController implements IComunicacaoPerdaController {
 
 					return ResponseEntity.status(HttpStatus.CREATED).body(response);
 				}
-				response.put("created", null);
+				response.put("created", false);
 				return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
 			} else {
 				response.put("created", null);
+				response.put("empty", "Possui campo em branco");
 				return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
 			}
 		} catch (Exception e) {

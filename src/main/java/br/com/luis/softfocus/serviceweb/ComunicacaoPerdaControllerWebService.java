@@ -123,7 +123,11 @@ public class ComunicacaoPerdaControllerWebService {
 
 			resposta = responseEntity.getStatusCodeValue();
 			if (resposta == HttpStatus.ACCEPTED.value()) {
-				return true;
+				if ((boolean) responseEntity.getBody()) {
+					return true;
+				} else {
+					return false;
+				}
 			} else {
 				return false;
 			}

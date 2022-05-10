@@ -164,12 +164,38 @@ function validaCampos(comunicacaoPerda) {
 		alerta.hidden = false;
 		alerta.innerText = "Campo latitude em branco.";
 		return true;
+	} else {
+		try {
+			let latitude = parseFloat(comunicacaoPerda.latitude);
+			if (isNaN(latitude)) {
+				alerta.hidden = false;
+				alerta.innerText = "Campo latitude inválido";
+				return true;
+			}
+		} catch (e) {
+			alerta.hidden = false;
+			alerta.innerText = "Campo latitude inválido";
+			return true;
+		}
 	}
 
 	if (comunicacaoPerda.longitude == "") {
 		alerta.hidden = false;
 		alerta.innerText = "Campo longitude em branco.";
 		return true;
+	} else {
+		try {
+			let longitude = parseFloat(comunicacaoPerda.longitude);
+			if (isNaN(longitude)) {
+				alerta.hidden = false;
+				alerta.innerText = "Campo longitude inválido";
+				return true;
+			}
+		} catch (e) {
+			alerta.hidden = false;
+			alerta.innerText = "Campo longitude inválido";
+			return true;
+		}
 	}
 
 	if (comunicacaoPerda.tipo_lavoura == "") {
@@ -236,7 +262,8 @@ function functionCreateOrUpdate() {
 				} else {
 					const raio10km = retorno.raio;
 					const comunicacaoPerdaRetornado = retorno.created;
-
+					const empty = retorno.empty;
+					
 					if (comunicacaoPerdaRetornado != undefined) {
 						if (raio10km != undefined) {
 							showToast(TOAST_SUCCESS, "Criado com sucesso.\nHá evento divergente do cadastrado em um raio de 10KM.");
